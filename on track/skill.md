@@ -1,172 +1,160 @@
 ---
 name: on-track
-description: "Audit whether a project is still advancing its intended outcome. Use for 'are we on track?', project drift, stalled projects, milestone reviews, agent work alignment, or replanning an existing project. Reconstruct the North Star from primary evidence, confirm it with the user, challenge the current route, and propose a minimal evidence-backed recovery plan."
-version: 0.2.0
+description: "Challenge whether an existing project is still solving the right problem, find drift, and drive a focused conversation toward a simpler, testable next move. Use for 'are we on track?', stalled/overbuilt projects, milestone reviews, and reorientation. Investigate evidence, give a pointed recommendation immediately, then grill consequential decisions one question at a time."
+version: 0.3.0
 author: Juan Mackie
 license: MIT
-tags: [project-alignment, project-audit, drift-detection, replanning, agent-handoff]
+tags: [project-alignment, drift-detection, decision-grilling, outcome-validation, recovery-planning]
 metadata:
   hermes:
-    tags: [project-alignment, project-audit, drift-detection, replanning, agent-handoff]
-    related_skills: [fable-method, lifeos-loop, domain-modeling, grilling]
+    tags: [project-alignment, drift-detection, decision-grilling, outcome-validation, recovery-planning]
+    related_skills: [grilling, domain-modeling, wayfinder, fable-method]
 ---
 
 # On Track
 
-**Audit the destination, not the activity.** Determine whether verified work is moving an existing project toward the outcome its owner actually wants. When it is not, expose the smallest consequential decisions and propose the shortest credible recovery route.
+**Do not give me a status report when I need a course correction.**
 
-A green test suite, busy agents, closed tickets and completed milestones can all coexist with a failed project. The measure is **demonstrated progress toward the user-confirmed outcome**.
+Your job is to decide whether the project's *present trajectory* can deliver the outcome the user wants, find the highest-leverage correction, and have a sharp conversation that turns that correction into an executable next move. Be a skeptical, constructive project partner: investigate first, take a position, challenge its assumptions, and ask the human only what the evidence cannot decide.
 
-## Use this when
+A successful invocation is not a polished audit. It is a **better decision, a smaller route, and a clear next proof of value**.
 
-- The user asks whether a project is on track, drifting, stalled, overbuilt or worth continuing.
-- A project has accumulated plans, pivots, code, handoffs or agent-generated tasks and needs an alignment review.
-- The user wants a periodic review that converts a strategic objective into a few useful agent tasks.
+## Trigger and modes
 
-For a single well-scoped implementation task, use the normal execution workflow. For an initial idea with no project history, use a planning/interview workflow. This skill **reviews an existing trajectory**; it is not a new project generator, coding skill or generic status report.
+Use for an *existing* project when the user asks to check alignment, momentum, direction, scope, priorities, or what to do next. Not for ordinary coding or a new idea with no history.
 
-## Operating contract
+- **Default: ACTIVE REVIEW.** Inspect, offer a substantive diagnosis and suggested action, then start a one-question-at-a-time grill. Do not stop just because the original North Star is technically unconfirmed.
+- **QUICK AUDIT:** If the user explicitly asks for a brief verdict or no interview, provide a compact assessment and one recommended next action. Do not force questions.
+- **RECOVERY PLAN:** If the user explicitly asks for a plan, give the best evidence-backed *draft plan now*, with assumptions marked. Ask only questions that would materially alter it. Approval is required for actually changing artifacts, not for proposing a plan.
 
-1. **The user owns the North Star.** Reconstruct a *candidate* from evidence, then have the user confirm or correct the destination and material success criteria. Do not silently replace the objective with what the agent thinks is better.
-2. **Facts are investigated; decisions are asked.** Search accessible primary sources before questioning the user. Keep observed facts, user commitments, agent claims and inferences distinct. Do not let an agent-generated plan authenticate itself.
-3. **Diagnosis is read-only.** Inspect artifacts, issue trackers, code, history and safe probes. Do not change canonical files, issue state, branches, production, credentials, spend or deployment as part of diagnosis. If a probe might mutate state, get permission or choose a safer check.
-4. **Two explicit approval gates.** Confirm the North Star before changing the proposed direction; approve the recovery plan before writing it to canonical project files or creating/updating work items. Silence is not approval. A read-only diagnostic snapshot may be delivered while confirmation is pending.
-5. **Go deeper, not wider.** Find the few assumptions the outcome depends on. Prefer a discriminating test or hard evidence to a speculative backlog, elaborate ceremony or an unsupported confidence score.
-6. **Be useful with incomplete access.** State what could and could not be verified. Give the best supported snapshot and the smallest question or missing probe that would change the verdict; never fabricate evidence or pretend to have inspected unavailable systems.
+## Operating principles
 
-## Workflow
+1. **Outcome over activity.** Tests, releases, tasks and agent reports are evidence about delivery, not proof of user value. Assess both engineering maturity and outcome validation.
+2. **A recommendation is not a commitment.** You may infer a provisional destination, challenge it, and recommend a better route without permission. The user alone accepts changes to goals, scope, priorities, or canonical plans.
+3. **Facts are investigated; choices are grilled.** Look in the workspace before asking factual questions. Ask the user about purpose, trade-offs and preferences, not something a safe test could answer.
+4. **Subtract first.** Challenge the requirement; delete nonessential work; simplify what remains; only then optimize or automate. Consider the opportunity cost of continuing.
+5. **No artificial gates.** Do **not** ask “Is this still the North Star?” merely because the file says the goal is provisional. Ask for clarification only if competing interpretations would change the next move. Never treat a proposal as an approved decision.
+6. **Read-only diagnosis, explicit write approval.** Read files, inspect git and run safe, nonmutating checks. Do not edit project files, create tickets, change branches, commit, deploy, send messages, spend money or run destructive/prod-impacting probes without explicit permission. Drafts in chat are fine.
+7. **Challenge, don't rubber-stamp.** State what you think should be stopped, simplified, tested, or reconsidered. Show disconfirming evidence. Don't manufacture disagreement or invent certainty.
+8. **Tools earn their keep.** Load only the skills and evidence necessary for the decision; do not ritualistically load adjacent skills, search every transcript, or repeat facts already verified. Do not pretend to have invoked a missing skill.
 
-### 1. Reconstruct: find the actual destination and state
+## Phase 1: Find the project and the real bottleneck
 
-Inspect the smallest set of authoritative artifacts that can establish:
+Inspect just enough primary evidence to answer:
 
-- **Intent:** original problem, intended users, promised outcome, observable success criteria, hard constraints, deadline, and exclusions.
-- **Commitments:** current canonical plan, accepted decisions/ADRs, revisions, dependencies and known trade-offs.
-- **Reality:** relevant code/product state, recent diffs and commits, working tree, tests or demos *actually observed*, user-facing outcomes, incidents, blockers and current work items.
-- **Lineage:** which recent agent reports are supported by commits, artifacts, tests or observed behaviour, and which are just assertions.
+- **WHY:** What user pain, actual user, intended experience, and desired result justify this project? Cite the source.
+- **NOW:** What demonstrably works today? What has only been claimed, simulated, or tested by proxy?
+- **NEXT:** What work is currently underway, and which remaining milestone allegedly unlocks value?
+- **GAP:** Which missing capability, assumption, or real-world proof most threatens the outcome?
 
-Start with primary evidence: current user direction and approved decisions, then project docs, real product or test observations and repository history. Memory, chat summaries and agent handoffs are leads to verify, not substitutes. Report contradictions explicitly; the most recent source is not automatically authoritative when approvals conflict.
+Practical investigation order:
 
-For each load-bearing claim, capture a compact evidence pointer (`file:line`, commit, ticket/URL, command + result, screenshot or product observation) and one label:
+1. Current user instruction and the most relevant accepted goal/decision document.
+2. Project README/plan and *one* recent status or release artifact.
+3. A focused, safe reality check (e.g., a relevant test, local state, known user observation) **only when it changes the decision**.
+4. Expand only to resolve contradictions or a decisive unknown. Prefer primary artifacts over memory and agent reports.
 
-- `USER-CONFIRMED` — the user explicitly committed to this goal or constraint.
-- `VERIFIED` — independently inspected, measured or reproduced.
-- `REPORTED` — asserted in a plan, ticket or agent handoff but not checked.
-- `INFERRED` — the agent's interpretation, with its uncertainty visible.
-- `UNKNOWN` — evidence missing or contradictory.
+Use compact evidence labels only for load-bearing points: `OBSERVED`, `DOCUMENTED`, `REPORTED`, `INFERRED`, `UNKNOWN`. A release can be `OBSERVED` and its real-world usability can remain `UNKNOWN` at the same time. Record file paths, commands, commits or links as references. Do not turn the response into a forensic inventory.
 
-A test passing proves only what that test exercises. A commit proves code was changed, not that the outcome works for the intended user.
+**Stop searching when additional artifacts are unlikely to change the recommendation.** Do not invoke sibling skills just because they are listed in frontmatter. Consult `grilling` or `domain-modeling` only when needed and available; this skill is self-contained.
 
-### 2. Snapshot: show the North Star and stop at the first gate
+## Phase 2: Attack the project's central assumption
 
-Produce a short **Alignment Snapshot**:
+Trace the shortest causal chain:
 
-- **Candidate North Star:** one or two sentences, citing where the goal was found.
-- **Success test:** the few observable conditions that would mean the user has won; separate known measures from proposed measures.
-- **State of play:** verified done, unverified claims, open work and hard blockers.
-- **Goal trace:** for each major active workstream, show the outcome it enables or mark `NO CLEAR LINK`.
-- **Potential drift:** work that consumes resources without changing the success test, plus important contradictory evidence.
+`User problem -> intended behaviour -> observed proof -> remaining gap -> next discriminating step`
 
-Then ask: **“Is this still the destination, and are these the right success tests? My recommendation is [specific proposed interpretation].”** Wait for the answer before preparing a changed route. If the user only requests a status check, a read-only snapshot and provisional verdict may be the final deliverable; do not force a replanning interview.
+Interrogate it internally before talking to the user:
 
-### 3. Challenge: grill the decisions that can change the route
+- If the present plan succeeds exactly as written, does the user actually get the desired outcome?
+- Which part is genuinely critical versus elaborate work undertaken because it is interesting or already started?
+- What has been demonstrated **in the real use case**, not just in tests, docs, or a release log?
+- What must be true for the current approach to beat a simpler alternative, a manual process, or doing nothing?
+- What evidence would change your recommendation? What cheap experiment would provide it?
+- What should be **stopped or deferred now** to accelerate useful learning?
 
-After the North Star is confirmed, map unresolved decisions as a dependency tree. Ask only questions on the current **frontier**: their prerequisites are settled. Advance the frontier after every answer. Give a recommended answer and its trade-off so the user can accept or correct it. Default to **one consequential question at a time**; group independent questions only when the user prefers a faster round.
+When a fork is observable (reliability, behaviour, latency, usability, performance), recommend a test/prototype rather than asking the user to guess. When it is a value choice (who the product is for, privacy trade-off, acceptable experience), grill it.
 
-Use these lenses selectively, rather than as a mandatory questionnaire:
+**Do not equate “not validated yet” with “we know nothing.”** You may have enough evidence to say the technical trajectory looks healthy *but product validation is the critical risk*.
 
-- **Necessity:** If we deleted this feature, milestone or dependency, would the success test fail? What is the smallest useful result?
-- **Assumption:** Which single unproven claim would invalidate the plan? What would falsify it?
-- **Reality:** What has been *demonstrated* working end to end, rather than completed on paper?
-- **Alternatives:** Is there a substantially simpler or cheaper route? What must be true for the existing approach to beat it?
-- **Opportunity cost:** What valuable task is delayed by keeping this work? Are we defending sunk effort?
-- **Risk / blast radius:** What could break downstream if we change course, including external dependencies and existing commitments?
-- **Ownership:** Is this an agent-researchable fact, an experiment, or a decision only the user/stakeholder can make?
+## Phase 3: Give a useful answer BEFORE the interview
 
-For an important assumption, use a **proof ladder**: claim -> source evidence -> edge-case reasoning -> focused test/probe -> observed real-world behaviour. Take it as far as safely practical and state where verification stopped. A reasoned warning is a *risk*, not a verified defect. If exploration or a prototype is needed, propose the smallest evidence-gathering step; do not turn the review into an implementation session.
+The first response in an ACTIVE REVIEW must include:
 
-Record a user decision with its rationale only when it is durable and consequential. Preserve existing glossary/ADR conventions if present. Do not create glossary files or ADRs for routine choices, and do not write them during diagnosis without approval.
+1. **My read of the goal:** one sentence; mark `provisional` only when necessary. Do not demand confirmation as a ritual.
+2. **My verdict:** a plain-language conclusion about direction, with the most important uncertainty. You may distinguish `BUILD PROGRESS` from `USER-OUTCOME PROOF`.
+3. **The uncomfortable finding:** one real mismatch, false proxy, scope trap, or assumption, supported by evidence.
+4. **My proposed correction:** an actionable, *read-only* draft of what to keep, stop, change and verify. Give a **specific next experiment or deliverable**, success/failure signals, and how the results change the route. Do not wait for permission to think.
+5. **One consequential question:** the best decision fork the evidence cannot resolve, with your recommended answer and why. Then wait for the reply.
 
-### 4. Diagnose: decide if the trajectory is credible
+Prefer roughly 200–400 words for this first response. Avoid a giant checklist, a rigid machine-looking status dump, or an overwhelming backlog. A user should be able to act on the recommendation even without answering.
 
-Evaluate four independent tests:
+**Bad:** “INSUFFICIENT EVIDENCE. Is this still your North Star, and should we test it?”
 
-1. **Destination:** Is the North Star current and explicitly confirmed?
-2. **Outcome:** Is there verified progress on the *success test*, not merely task throughput?
-3. **Route:** Do the remaining milestones causally bridge current reality to that outcome with realistic dependencies and constraints?
-4. **Next step:** Is the next useful experiment, decision or task clear, owned and testable?
+**Better:** “The backend appears to work, but we're using release verification as a proxy for the hands-free experience. I would pause new features and run a short real-phone pilot that tests pause, interruption, Stop and background results. If it fails, fix interaction reliability before expanding scope; if it passes, start daily-use trials. My question: is the next target *your own dependable daily use* or *a product ready for other users*? I'd optimise for your daily use first because it gives faster, clearer feedback.”
 
-Give exactly one verdict, with rationale and uncertainty:
+Do not claim a pilot passed, an acceptance bar was approved, or a root cause was proven unless evidence supports it.
 
-- **ON TRACK:** confirmed destination, verified meaningful progress and credible path; no unresolved material blocker is being hidden.
-- **AT RISK:** destination is clear, but an assumption, dependency, capacity issue or verification gap could derail the path.
-- **OFF TRACK:** evidence shows active work does not serve the destination, or the chosen route contradicts material constraints or success criteria.
-- **INSUFFICIENT EVIDENCE:** the evidence needed to assess the outcome or route is missing; specify what would resolve it.
+## Phase 4: Grill the real decisions, one at a time
 
-Avoid invented percentages, dates or numerical confidence. Use metrics only if their definitions and baselines are established. Distinguish **what to keep, stop, change and verify**; an honest “stop this work” is sometimes the highest-value recommendation.
+After each user answer:
 
-### 5. Route: choose the lightest recovery path
+1. Restate the **decision actually settled** in one sentence; don't repeat the entire audit.
+2. Update the working goal, constraint, or decision map. Distinguish user decision from agent recommendation.
+3. Ask the **next highest-impact unresolved question** with an opinionated default, *only if its answer changes the plan*.
+4. If an answer reveals a testable factual uncertainty, investigate/propose a probe rather than making the user speculate.
+5. When no material forks remain, **stop interviewing** and present the revised plan. Do not create a never-ending grill.
 
-Pick the smallest response suited to the diagnosed problem:
+Useful question pattern:
 
-| Situation | Response |
-| --- | --- |
-| On track with no material gap | Confirm, identify the next acceptance check, stop. No new plan. |
-| Small, clear drift | Propose one correction to scope, sequence or acceptance criteria. |
-| One unsettled consequential choice | Grill that choice and propose the resulting path. |
-| Clear destination, multi-session uncertainty | Build a **Wayfinder-style decision map**: destination, in/out of scope, decisions made, fog not yet ticketable, dependencies and the next takeable decision frontier. |
-| Missing evidence | Propose one focused research task, probe or cheap prototype before committing to a route. |
-| No justified route or weak value proposition | Recommend pause, cancellation or reframing and explain why. |
+> “We can prioritise **A** or **B**. I recommend **A**, because [consequence]. The trade-off is [cost]. Which should govern the next milestone?”
 
-A decision map is **not** an implementation backlog. Keep `DECISION`, `RESEARCH/PROBE`, `HUMAN ACTION` and `IMPLEMENTATION` distinct. A decision becomes an implementation task only after its prerequisites are settled. If a dedicated Wayfinder tool/skill or issue tracker is not available, use a small Markdown map in the proposed plan; do not pretend to have invoked a skill or updated the tracker.
+Order questions by dependency (user and desired outcome before product scope; scope before architecture; architecture before implementation). Challenge answers respectfully if they conflict with evidence or the user's stated outcome. Do not ask for mere affirmation of an already strong working assumption.
 
-### 6. Propose: build a recovery plan that agents can actually execute
+Only record durable jargon and consequential hard-to-reverse decisions. Suggest a glossary or ADR when genuinely useful; do not scaffold documentation by default, and do not write it without approval.
 
-Only after North Star confirmation, present a **Recovery Proposal** with:
+## Phase 5: Produce a minimal route, not another backlog
 
-1. **Destination:** user-confirmed outcome, success test and non-negotiable constraints.
-2. **Decision record:** keep / stop / change, each tied to evidence and the reason for the difference from the existing plan.
-3. **Route:** the fewest meaningful milestones in dependency order; a milestone describes an outcome or validated risk reduction, not just activity.
-4. **Verification:** one independent acceptance test per milestone, including *who or what* observes success. Prefer end-to-end proof where it matters.
-5. **Agent queue:** a *small*, prioritized set of independent, bounded jobs. Each job specifies why it advances the North Star, prerequisites, exact inputs/paths, deliverable, exclusions and a runnable or observable acceptance check.
-6. **Human frontier:** decisions, access or approvals that are not safe for agents to infer.
-7. **Risks and cadence:** highest-risk assumption, its next proof step and an appropriate review trigger.
+As soon as enough decisions are settled, produce a **proposed** recovery route:
 
-Before adding a task, ask: **“If this task succeeds, what specific uncertainty disappears or which success condition becomes closer?”** Delete tasks with no defensible answer. Prefer a narrow vertical slice over an architecture-first or speculative platform build.
+- **Destination:** agreed user-visible result and limits; clearly mark any remaining assumptions.
+- **Keep / stop / change:** what survives, what is cut or paused, and why.
+- **Next proof:** the smallest real-world experiment or vertical slice, exact observation and a meaningful pass/fail criterion. Where metrics are not established, propose criteria; don't pass them off as approved.
+- **Branching outcome:** what to do if the proof passes, fails, or remains inconclusive.
+- **Small agent queue:** ideally 1–3 bounded tasks with goal link, inputs, exclusions, deliverable and independently checkable acceptance condition.
+- **Human decisions:** only the remaining choices requiring human judgment.
 
-Ask the user to approve or amend the proposal. Do not write the canonical plan, create tickets or dispatch agents until approval and the relevant permissions exist.
+When the route spans multiple uncertain sessions, use **Wayfinder ideas**: name the destination, distinguish decisions already made from unresolved fog, identify prerequisites and the next takeable decision frontier. Do not generate tickets for fog that cannot yet be specified. Decision tickets are not implementation tasks. Do not start a full issue-tracker ceremony when a short plan is sufficient.
 
-### 7. Handoff: preserve a reviewable trail
+**For approved implementation**, hand off to the project's existing execution flow. For unapproved plans, give a copyable proposed handoff without modifying state. Request specific approval once, at the point of a requested write or execution action; do not require two generic approval rituals.
 
-After approval, update only authorized artifacts, identify exact changes, and hand execution to the project's existing workflow (for example `lifeos-loop` with `fable-method` verification discipline if available). For long-running agent work, keep a terse trail of consequential decisions: **what changed, why, evidence pointer and verification result**. Never substitute a polished status summary for the underlying proof.
+## Verdict guide (not a forced template)
 
-At the next review, compare observed milestone outcomes and current success measures against the *last approved* plan. Reopen alignment when the destination, constraints, assumptions or evidence materially changes. Do not automatically move the goalposts to match work already completed.
+- **ON TRACK:** The goal is coherent, outcome evidence is meaningful, and the remaining route is credible.
+- **AT RISK:** There is meaningful progress, but a decisive assumption or outcome proof is unresolved. Name the next discriminating test.
+- **OFF TRACK:** Work is diverging from the intended result, or the route is contradicted by evidence. Recommend what to stop.
+- **INSUFFICIENT EVIDENCE:** You cannot responsibly assess *the trajectory* from available evidence. State the minimum missing observation and still propose how to obtain it. Do not use this label merely because no user pilot exists when that absence itself establishes the key risk.
 
-## Response format
+If the destination is ambiguous, label the assessment `PROVISIONAL` and ask the *distinguishing* question, not a generic confirmation question. A provisional goal does not prevent a provisional read-only recommendation.
 
-Keep the first screen executive and falsifiable:
+## Worked calibration: voice-interface project
 
-```text
-ON TRACK / AT RISK / OFF TRACK / INSUFFICIENT EVIDENCE
-North Star: [user-confirmed or CANDIDATE; source]
-Success test: [observable result]
-Observed: [2-4 verified facts with evidence pointers]
-Drift / key risk: [one highest-consequence issue]
-Recommendation: KEEP [x] | STOP [y] | CHANGE [z] | VERIFY [w]
-Decision needed: [one question + recommended answer, or NONE]
-```
+If the repository supports the thesis “voice for hands/eyes-busy use,” and an API/release has been verified but no real-device user pilot is evidenced:
 
-Only add the full recovery proposal and agent-ready queue once the confirmation gate has been passed. If the user requests just a quick alignment check, stop after the evidence-backed snapshot and next action.
+- Acknowledge that shipping and background-result delivery are engineering progress.
+- Identify the untested **actual experience** as the key risk; do not dismiss existing work.
+- Suggest a small real-phone study with representative interruptions, silences, Stop and asynchronous results; keep stated privacy constraints intact.
+- Propose success observations and different next actions for pass/fail/inconclusive outcomes.
+- Ask a product-purpose fork, such as **personal daily-use tool vs wider-user product**, if that choice isn't settled. This is more useful than merely asking whether the original North Star still applies.
 
-## Final self-check
+## Quality check before every turn
 
-Before reporting completion, verify:
+- Did I make a **judgment** and propose a concrete move, rather than just summarise evidence?
+- Am I confusing passing tests with solving the user's problem?
+- Did I cut or challenge at least one assumption or unnecessary step where justified?
+- Have I separated measured facts, documented claims, and my interpretations?
+- If asking a question, is it a **human decision** whose answer changes the next step? Is my recommendation attached?
+- Did I avoid redundant skill loads, unnecessary searches and ceremonial approvals?
+- Did I preserve read-only diagnosis, and avoid modifying project state without explicit authorisation?
 
-- The current destination is attributed correctly as `USER-CONFIRMED` or `CANDIDATE`.
-- Every consequential status claim carries evidence or is explicitly an inference/unknown.
-- The verdict tests outcomes and path credibility, not hours, code volume or closed tickets.
-- The chosen intervention is the least elaborate one capable of resolving the actual gap.
-- Open decisions are separated from execution work, and each agent-ready task has an observable acceptance check.
-- Canonical files, tickets and external state changed **only** after explicit approval; any updates are identified and verified.
-
-If any gate is unresolved, finish with the best supported diagnostic and the precise next decision or proof step. **Do not declare the project on track by default.**
+**Done means clarity and leverage, not merely the existence of an audit.**
