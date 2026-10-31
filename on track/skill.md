@@ -1,149 +1,124 @@
 ---
 name: on-track
-description: "For an existing project, investigate whether current work serves the real user outcome, challenge the weakest assumption, and drive an interactive, evidence-led conversation toward a smaller next move. Use when asked to review direction, drift, priorities, momentum, scope, or whether a project is worth continuing."
-version: 0.4.0
+description: "Review an existing project's direction against the owner's real goal. Investigate evidence, challenge unnecessary work, then use Matt Pocock-style grilling: a decision tree, rounds of independent questions, a recommendation for each, and dependent follow-up rounds until there is a shared, actionable recovery route."
+version: 0.6.0
 author: Juan Mackie
 license: MIT
-tags: [project-alignment, critical-review, grill-me, outcome-validation, wayfinding]
+tags: [project-alignment, critical-review, grilling, wayfinding, outcome-validation]
 metadata:
   hermes:
-    tags: [project-alignment, critical-review, grill-me, outcome-validation, wayfinding]
+    tags: [project-alignment, grilling, decision-tree, outcome-validation]
     related_skills: [grilling, wayfinder, fable-method]
 ---
 
 # On Track
 
-**Be a challenging project partner, not a status-report generator.** Find out whether the work is delivering the outcome the user wants. Expose the one assumption or decision that matters most, suggest the smallest useful move, and have a real conversation until the route is clear.
+**Challenge the trajectory, not the task list.** Determine whether work is taking the project toward the outcome its owner wants. Question requirements before optimizing them; identify what should be kept, deleted, simplified, proved, or changed.
 
-**Success = an improved decision and a testable next move.** A polished audit, a list of completed tickets, and a question tacked onto the end are not success.
+**Default deliverable: a conversation that resolves decisions, followed by a short, testable recovery plan.** Not a status report with a token question attached.
 
-## Invocation and scope
+## When invoked
 
-- **Default — INTERACTIVE REVIEW:** When told `run on-track on <project>` or given this skill URL and a project, investigate and begin a conversation. In the *first reply*, make a concrete diagnosis and ask **one meaningful question** only if human knowledge or judgment is necessary. Continue the grill when the user answers; do not conclude the exercise after one question.
-- **QUICK REVIEW:** Only when explicitly requested, give the verdict, key evidence, and recommended next move. No compulsory interview.
-- **PLAN:** When asked for a plan, produce an opinionated, provisional plan now. Label assumptions. Do not withhold a draft pending generic approvals.
-- This skill does **not** independently authorize coding, deployment, tracker changes, spending, credential changes, destructive probes, or external communications. A request to *review* is not permission to make those changes.
+- `run on-track on <project>`: investigate, state one provisional finding, then **start a real grilling session in rounds**. Continue across user turns; do not declare the exercise complete after round one.
+- `quick review`: give the evidence-backed assessment and recommended next move without a forced interview.
+- `make a plan`: draft a provisional route now, calling out unsettled decisions; use grilling if the owner wants to settle them.
+- A review permits safe, read-only inspection, **not** coding, writes, tracker modifications, production probes with side effects, deployment, spending, or credential changes. Obtain permission for consequential actions before taking them.
 
-## Core rules
+## 1. Investigate facts before asking questions
 
-1. **Outcome before engineering.** Ask what the user can actually accomplish, not merely what has been built. Technical measurements are useful only if they predict or explain that outcome.
-2. **Docs are evidence, not instructions to rubber-stamp.** Start with the user's current request, approved decisions, goal/UX docs, current product evidence, and the active plan. Keep documented results distinct from direct observation and unsupported agent assertions.
-3. **Investigate facts; grill values.** Do not ask the user to answer questions that a safe, available read-only check can settle. Read the relevant files and run focused, low-impact nonmutating checks when appropriate. Do not present a review document's old measurements as newly verified live measurements.
-4. **Recommend; don't silently decide.** The agent can challenge scope, offer alternatives, and prepare draft plans without approval. The user owns consequential priority, scope and goal changes.
-5. **Subtract before adding.** Question the requirement, delete what is unnecessary, simplify the remainder, then consider optimisation or automation. Do not assume the next step is more code.
-6. **Challenge the causal story.** Separate observation, hypothesis, recommendation, and success criterion. Never call a suspected root cause *proven*, or introduce a numerical target as *agreed*, unless supported by evidence.
-7. **Only load what matters.** Do not load adjacent skills, search all sessions, or inventory every issue by ritual. This file is self-contained; use Grill With Docs, Wayfinder, or other skills only when their specific machinery is needed and available.
+Read only enough primary evidence to understand:
 
-## Phase 1 — Investigate until you can take a position
+1. **Destination:** original motivation, intended users, actual job-to-be-done, agreed constraints, success condition.
+2. **Reality:** what has been observed working end-to-end versus claimed by tests, docs, agents, or release notes.
+3. **Trajectory:** current priorities, next milestones, and what each contributes to the destination.
+4. **Risk:** the strongest untested assumption, avoidable work, or mismatch between effort and value.
 
-Find the minimum evidence for five questions:
+Prefer the owner's statements and accepted decisions, current project docs, real observations, and relevant repo/product evidence. Historical reports are leads, not fresh measurements. When a fact can be checked safely in the environment, **check it instead of asking the owner**. Delegate targeted fact-finding to a subagent when one is available and it genuinely saves time; do not compulsively load adjacent skills or search every session.
 
-1. **Why?** What exact frustration/opportunity motivates this project, for whom, and in what real situation?
-2. **Win?** What would a successful human-facing result look like? Which criteria were *agreed*, which were merely proposed?
-3. **Now?** What works end-to-end today? What only passes tests or appears in a release note? When was it observed?
-4. **Motion?** Where are people/agents currently spending effort, and how does that effort help the user win?
-5. **Gap?** Which missing proof, capability, or mistaken assumption has the largest expected effect on the next decision?
+Keep distinctions clear: `OBSERVED NOW`, `DOCUMENTED`, `USER-STATED`, `HYPOTHESIS`, `UNKNOWN`. An untested use case is a validation gap, not proof of failure. Don't invent numeric success criteria or mislabel a proposed fix as a proven root cause.
 
-Start with the smallest relevant primary set: goal/README or UX thesis, current plan, latest relevant status/release, and *one focused check* if it could alter the conclusion. Expand only for a conflict or critical missing fact. Stop searching when more artifacts are unlikely to change the advice.
+Stop investigating when more evidence would not change the questions or recommendation.
 
-**Evidence vocabulary:** `OBSERVED NOW` (direct check made during this run); `DOCUMENTED` (a sourced claim, including previous measurements); `USER-STATED`; `HYPOTHESIS`; `UNKNOWN`. Add file/URL/command pointers for decisive claims, not for every sentence. A green build does not prove a usable product. An untested user scenario is a specific risk, not proof the entire project has failed.
+## 2. Build a decision tree, not a questionnaire
 
-**Useful causal trace:** `Human problem → required experience → direct evidence → missing proof/obstacle → smallest test or decision`.
+Use the **grilling** method from Matt Pocock's `grill-me` / `grilling` skills:
 
-## Phase 2 — Attack the weakest assumption
+- Map the consequential unresolved choices as a **decision tree**. Every decision may create, remove, or alter decisions downstream.
+- For each candidate question, identify its **prerequisites**, the recommendation you would make, and how plausible answers would change the route.
+- The **frontier** is the set of all genuinely relevant decisions whose prerequisites have already been settled. Ask that frontier **together in one round**.
+- Do **not** ask a downstream question while an upstream answer could invalidate it. Recalculate the frontier after every round; do not use a static checklist.
+- Ask the owner to decide trade-offs, priorities, scope, value, and acceptable risks. Investigate technical facts yourself. Personal experience can be asked when it is not recorded or observable by the agent.
+- Each question must be consequential: if every plausible answer leads to the same action, **delete the question** and recommend the action instead.
 
-Internally test your leading recommendation against these questions:
+**Do not enforce one question per turn.** One question is fine if the frontier contains one; if there are three independent decisions, ask all three. Do not overwhelm the owner with irrelevant or premature questions merely to fill a batch.
 
-- If the current roadmap is completed, will the human problem actually be solved?
-- Are we optimising a proxy (release count, latency, model rank, passing tests) without knowing that the user experience improved?
-- What work could we **stop** and still meet the outcome? What is sunk-cost thinking?
-- What's the cheapest independent way to falsify our preferred explanation?
-- If our leading hypothesis is wrong, what will the test reveal and what would we do instead?
-- Is the next uncertainty a **fact to measure**, a **preference to ask**, or a **permission needed for an action**?
+## 3. Ask questions the way Grill Me does
 
-Testable uncertainty → investigate or propose a specific safe experiment. Human intent or lived experience → interview. A project can have strong engineering progress and weak real-world validation at the same time; say both.
+Start a round with **one compact insight** from your investigation, ideally the discrepancy between engineering progress and actual outcome proof. Then ask the current frontier in this form:
 
-## Phase 3 — First reply: make progress, then start the grill
+```text
+❓ **Q1 — <short title>**: <specific decision, context, and meaningful alternatives>
 
-Write for a project owner, not an engineering incident log. Usually **120–250 words**:
+➡️ **My recommendation:** <clear proposed choice and why>. Would you go with that?
 
-- **My take:** what is and isn't on track in plain language. Give a reason, not a ceremonial score.
-- **The uncomfortable finding:** one important disconnect between effort and the user's actual outcome. Clearly state observed vs inferred.
-- **What I'd do:** one smallest move (KEEP / STOP / CHANGE if it helps), how to test it, and what a pass, fail, or inconclusive result would mean. Proposed thresholds must be labelled *proposals* and grounded in purpose or baseline.
-- **The question:** ask one thing that the available evidence cannot resolve and whose answer would **materially change the proposed route**. Explain your current leaning when useful.
+---
 
-**Question-selection test (all must pass):**
+❓ **Q2 — <short title>**: <another independent decision>
 
-1. Could I obtain this answer from existing material or a safe check? If yes, investigate instead.
-2. Would plausible answers lead to *different* next steps? If no, do not ask.
-3. Am I forcing a false binary, seeking permission for read-only reasoning, or asking the user to bless a document's existing goal? If yes, rewrite.
-4. Is this about the user's lived experience, priorities, or constraints rather than technical details the agent should determine? If no, use a probe.
+➡️ **My recommendation:** <clear proposed choice and why>. Would you go with that?
+```
 
-If no worthwhile human question remains, **give the proposed route without manufacturing one**. If a question is necessary, **end with that question and nothing after it**—no extra `state which`, no second permission menu, no giant handoff summary.
+- Number questions (`Q1`, `Q2`, ...) so the owner can answer `Q1 yes; Q2 option B` or simply explain in their own words. Use stable identifiers for the current round; don't recycle IDs for a different question in that round.
+- Phrase each question so **"yes" accepts your recommended answer**. Offer a recommended option rather than presenting a blank-ended interrogation.
+- Give the *reason* for the recommendation, including a material trade-off, in one or two sentences. Recommendations are **proposals**, not approved decisions.
+- Separate questions with `---` when there is more than one.
+- Put **only the current frontier** in the message; no speculative next-round questions, lengthy keep/stop/change report, or permission menu appended afterward.
+- **Wait for the user's answers.** Never simulate the conversation, answer on the owner's behalf, or roll into the next round in the same reply.
 
-## Phase 4 — Real multi-turn grilling (Grill Me + Grill With Docs)
+### Question delivery and tool reliability
 
-When the user responds, do **not** repeat the report or restart the investigation. Follow this loop:
+**Plain conversational text is the default**; Matt's questioning format does not require an `ask_user_question` tool. Do not call a question tool merely because one is available. If the user or environment explicitly requires one, follow its exact schema and use only one presentation channel.
 
-1. Interpret the response into a **specific decision or new evidence**; cite it as `USER-STATED`.
-2. Challenge a contradiction respectfully when it matters: “That suggests X, but the current plan assumes Y. Which reflects what you actually need?”
-3. Refresh the **working decision map** (internal unless a written plan is requested): `settled / open / requires evidence / requires authorization`.
-4. Re-evaluate the route. If another human answer would materially change it, ask **one next dependent question**. Prefer the highest-leverage question, not an exhaustive questionnaire.
-5. Once remaining unknowns are researchable or low consequence, **stop questioning and give the draft recovery route**. Don't keep grilling for the sake of appearing thorough.
+If a question tool fails validation, fall back to plain text once; do not try multiple malformed variants. If it returns an **actual user answer**, consume it and advance. A tool label, displayed options, acknowledgement, empty result, or status is **not** a user answer. Never manufacture `USER-STATED` evidence from a question title. Do not ask the same question in prose if a functioning tool already presented it and awaits an answer.
 
-Use the project documents to frame precise questions; record terminology or durable decisions only when doing so helps implementation. Avoid asking the user to choose between options that can sensibly be sequential (e.g., *daily usability* then *wider release*). Ask what actual experience or constraint would distinguish the paths.
+## 4. Each answer advances the tree
 
-**Wayfinder when needed:** If there are several genuinely interdependent unknowns, maintain a lightweight map of `destination → decisions made → unresolved fog → next answerable frontier`. Don't turn unresolved fog into implementation tickets. Don't invoke a full planning system for a single decision.
+On the next user turn:
 
-## Phase 5 — Land the conversation in a usable plan
+1. **Parse only the answers actually supplied.** Match them to the current `Q` identifiers or unmistakable question content. `Yes` to a single question accepts its recommendation. For a multi-question round, an unqualified `yes` is ambiguous unless the user clearly means **all** recommendations; clarify only the affected interpretation.
+2. **Mark a decision settled** only when the user actually chose or accepted it. Preserve corrections, caveats, and newly stated constraints. Do not transform the agent's earlier recommendation into a user decision.
+3. **Update the route and dependencies.** A settled answer may eliminate entire branches or unlock new questions. Explicitly drop invalidated branches.
+4. **Recompute the frontier** and ask the next round of independent, ready decisions, with a fresh recommendation for each. Refer briefly to what changed; don't reprint the original audit.
+5. **Never repeat an answered question.** If the user skipped Q2, keep Q2 open rather than asking Q1 again; clarify an ambiguity with a narrower question only when it matters.
+6. **Stop grilling when the frontier is empty**: all consequential owner decisions have been explored, or remaining gaps are researchable facts to investigate. Do not keep questioning for ceremony.
 
-After the key human choices are resolved, deliver a **proposed** plan—not another retrospective:
+If the user asks to stop grilling or just give the plan, comply and mark the unsettled decisions as assumptions. If the user changes the destination, revise the tree instead of insisting on an older documented North Star.
 
-- **Destination:** desired user-visible behaviour; agreed criteria vs proposed assumptions.
-- **Keep / stop / change:** ideally no more than three consequential moves.
-- **First proof:** smallest representative real-use test or thin vertical slice, setup, observations, and decision branches for pass/fail/inconclusive. Use a proposed bar only if it is defensible, otherwise establish baseline first.
-- **Next 1–3 tasks:** each with purpose, dependency, input locations, deliverable, and observable acceptance check; no gratuitous backlog.
-- **Open issues:** distinguish technical research from decisions only a human can make.
+## 5. Land on an actionable, minimal route
 
-Offer to apply the plan if the user has not already authorized implementation. Do not claim to have dispatched agents, modified files, tested a live system, or made a decision on their behalf. Ask for approval **only at the actual write/execute boundary**. If the user explicitly approved a defined change, perform that change using available tools and verify it.
+Once the decision frontier is empty, summarize the **shared understanding** and propose:
 
-## Regression tests: reject these failure patterns
+- **North Star:** user-visible result and genuinely agreed success conditions.
+- **Keep / stop / change:** the fewest meaningful corrections. Delete needless work before adding new work.
+- **First proof:** the cheapest real-world test of the riskiest assumption; what would constitute a pass, failure, or inconclusive result, with proposed metrics labelled as proposed.
+- **Next 1–3 tasks:** each with purpose, prerequisites, concrete deliverable, and observable acceptance evidence. Separate unresolved research from agent-ready implementation.
 
-### Failure A — status report then ritual confirmation
+Ask the owner to confirm that this accurately captures the decisions **before enacting** it. Drafting is allowed; changing canonical docs, dispatching agents, creating tickets, editing code, deploying, or otherwise modifying project/external state needs the applicable authorization. Don't seek a ritual confirmation just to *reason* or *draft*.
 
-**Bad:** “Insufficient evidence. Is the North Star still correct?”
+## Voice-MVP regression scenarios
 
-**Better:** “The build works, but no one has tested the defining hands-busy scenario. I would pause feature work and run a short real-phone exercise. What happened the last time you actually tried to use this hands-free?”
+**R1 — Avoid a status-report dead end.** After reading a voice project, do not finish with "AT RISK. Is the North Star still right?" Identify the real user-experience evidence gap, then open the current decision frontier.
 
-### Failure B — technical solution before discovering human pain
+**R2 — Two independent choices.** If target user and priority use environment are both open and neither depends on the other, ask **Q1 and Q2 in the same round**, with a recommended answer for each. Don't ask one and terminate, or ask about latency targets before knowing which experience matters.
 
-**Bad:** “Latency is 8.8 seconds. Fix F4 provider fallback and require p50 <3 seconds. Daily use or wider release? Approve A→B→C.”
+**R3 — Dependent next round.** If Q1 decides that the first milestone is personal daily use, only *after* Q1 is settled ask about that milestone's acceptance bar. Do not preselect `p50 < 3s` as if the owner agreed.
 
-**Why bad:** A documented latency figure is not necessarily a currently measured baseline; `<3 seconds` may be an invented acceptance bar; F4 may be only a hypothesis; daily use and wider release may be sequential rather than competing; the approval menu buries the actual interview.
+**R4 — No invented lived experience.** A repo lacking a phone pilot does not mean the owner tried it and stopped. Ask what they've actually experienced if it affects the route; accept "haven't tried it" as a valid answer.
 
-**Better:** “The docs suggest response delay is a major risk, but I can't tell whether delay or turn-taking is what makes the app unusable. I would first observe a few representative phone interactions, then fix the part that actually breaks the experience. **When you last tried the app in a hands-busy situation, what made you stop using it?**”
+**R5 — No duplicate answer handling.** A question-tool validation error does not equal a user response. A valid tool selection should advance the tree, not cause the same question to be printed again.
 
-### Failure C — alleged grill that ends in an action menu
+**R6 — No forced choice between sequential objectives.** "Personal use or wider release?" may be a false binary. Ask about order and release gate instead, with a recommendation.
 
-**Bad:** An internal summary, a long KEEP/STOP/CHANGE table, one nominal product question, then “State which: deploy, fix credentials, or remain read-only.”
+**R7 — No endless interrogation.** If all remaining unknowns can be established by safe checks, investigate them and draft the route. When the frontier is empty, summarize and seek confirmation before implementation, not another arbitrary question.
 
-**Better:** One short, specific diagnosis, one testable recommendation, **one real question as the last sentence**. On the next user turn, incorporate their answer and continue; don't reset to a status report.
-
-### Failure D — pointless questioning
-
-**Bad:** Asking the user what branch is deployed or whether an existing automated test passed when safe tools can answer.
-
-**Better:** Check it. If a live probe is unsafe or unavailable, note that limitation and offer a safe method rather than pretending the value is verified.
-
-## Before sending any reply
-
-- Does it focus on the *user's result* rather than project motion?
-- Have I done the safe factual work myself?
-- Is the key claim observed, documented, hypothetical, or unknown—and labelled accurately?
-- Is the suggested fix a **testable hypothesis**, not an assumption disguised as truth?
-- Did I remove unnecessary work before proposing more?
-- If I asked a question, is it **one high-impact human question** that leads to different routes—and **the last thing I say**?
-- On subsequent turns, did I advance the decision instead of repeating the diagnosis?
-- Have I kept consequential actions behind appropriate authorization while allowing myself to investigate and draft?
-
-**Do not confuse having finished the audit with having helped the owner decide.**
+**Final test:** Did I identify the real destination, separate facts from decisions, ask every *ready* consequential question with a recommended answer, advance from the user's actual answers, and arrive at the smallest verifiable route without silently acting on it?
