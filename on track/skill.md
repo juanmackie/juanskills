@@ -1,7 +1,7 @@
 ---
 name: on-track
 description: "Check whether a project is still heading toward its owner's real outcome. Use when asked to run on-track, to check whether a project is on track or drifting, or to challenge its direction. Investigates evidence, grills the owner in rounds (Matt Pocock's grilling method) until the owner's decisions are settled, then drafts a 1-3 task recovery route."
-version: 0.7.0
+version: 0.7.1
 author: Juan Mackie
 license: MIT
 tags: [project-alignment, critical-review, grilling, wayfinding, outcome-validation]
@@ -51,29 +51,34 @@ Rules:
 
 ## 3. Ask a round
 
-The message contains only these parts:
+Write to the owner like a colleague who hasn't seen your notes. The message must make sense on its own.
 
-1. **Settled line** (from round 2 on): one line, e.g. `Settled: Q1 → personal daily use first (you said).`
-2. **One insight** (round 1, or when new evidence changes the picture): at most 3 sentences, saying how you know each claim (seen now / documented / you said / unverified). No verdict labels such as AT RISK, no audit.
-3. **The frontier:**
+Order:
+
+1. **Where we are** (1-3 plain sentences): the one thing that matters most, usually the gap between work done and the outcome actually proven, and how you know it. From round 2 on, open with a `Settled:` line (e.g. `Settled: Q1 → personal daily use first (you said).`) plus one sentence on what that changes.
+2. **The questions**, in this format:
 
 ```text
-❓ **Q1** - **<title>**: <context; alternatives labelled A/B/C when there are several>. <closing proposal worded so "yes" = your recommendation, e.g. "Should the first milestone be A?">
+❓ **Q1** - **<title in plain words>**: <the decision and why it matters, 1-3 sentences. Options labelled A/B/C if there are several. End with a sentence worded so "yes" = your recommendation.>
 
-➡️ <recommended answer, one-sentence reason, the trade-off>
+➡️ <your recommendation, one reason, one trade-off>
 
 ---
 
-❓ **Q2** - **<title>**: ...
-
-➡️ ...
+❓ **Q2** - ...
 ```
 
-Rules:
+3. **How to reply** (one line): `Reply "yes" to accept all my recommendations, answer by number (e.g. "Q1 yes, Q2 B"), or just tell me in your own words.`
 
-- Number questions continuously across the session (if round 1 used Q1-Q2, round 2 starts at Q3). A number always means the same question.
+Writing rules:
+
+- Ask the questions; never describe them. "The frontier asks Q1 (milestone split)" is a summary, not a question.
+- Use the owner's and the project's own words. Never use skill vocabulary in the message: frontier, decision tree, round, prerequisite, branch, mode, "§", or strings like "A/A/A".
+- Don't list files read or checks run. Mention a result only if it changes a question (e.g. "tests pass, but none cover the in-car case").
+- Number questions continuously across the session (round 2 after Q1-Q2 starts at Q3).
+- At most 4 questions per round. If more are ready, ask the 4 most consequential and carry the rest.
 - Before sending, check every ➡️ line: if agreeing with it would mean answering "no" to its question, reword the question.
-- Then stop and wait. No next-round questions, keep/stop/change report, permission menu, or answers on the owner's behalf.
+- **Then end your turn.** No more tool calls, no status echoes, no "waiting" messages, no next-round questions, no keep/stop/change report, no permission menu, no answers on the owner's behalf. If the host re-prompts you with no new user message, reply with one line: `Waiting on your answers to Q1-Q3.`
 - Ask in plain text. Use a question tool (e.g. `ask_user_question`) only if the user or host requires one: one call, exact schema. If it fails validation, ask once in plain text; no retry variants. A tool title, option list, acknowledgement or empty result is not an answer. Don't re-ask in prose a question a working tool is already showing.
 
 ## 4. Advance on each reply
@@ -103,3 +108,4 @@ Then ask once whether this captures what was agreed, before anything is enacted.
 - Is every question a real owner decision with settled prerequisites, and did I ask all of those?
 - Does "yes" mean my recommendation for each?
 - Is everything I call the owner's decision something they actually said?
+- Could the owner act on this message without reading anything else, and is it free of skill vocabulary?
