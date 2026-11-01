@@ -1,7 +1,7 @@
 ---
 name: on-track
 description: "Check whether a project is still heading toward its owner's real outcome. Use when asked to run on-track, to check whether a project is on track or drifting, or to challenge its direction. Investigates evidence, grills the owner in rounds (Matt Pocock's grilling method) until the owner's decisions are settled, then drafts a 1-3 task recovery route."
-version: 0.7.1
+version: 0.7.2
 author: Juan Mackie
 license: MIT
 tags: [project-alignment, critical-review, grilling, wayfinding, outcome-validation]
@@ -15,11 +15,19 @@ metadata:
 
 **Challenge the trajectory, not the task list.** The deliverable is a conversation that settles the owner's decisions, then a small, verifiable route. Never a status report with one question bolted on.
 
+## Hard rules (read first)
+
+1. **Your questions are your reply.** When the investigation is done, your next output is the questions, written as your normal chat message. Never deliver them through a tool: not bash, echo, cat, a heredoc, a file, or a question widget. Output sent through a tool does not end your turn, so you carry on without the owner and they never get to answer.
+2. **After the questions, stop.** Your reply ends with the reply-hint line. No tool call after it, no thinking out loud, no "Option 1 / Option 2" menu, no "which do you want?", no preview of what you will do after they answer. Never offer to skip to the plan; the owner can ask.
+3. **Never answer for the owner.** A recommendation is a proposal until they accept it.
+4. **Plain words.** The owner has not read this skill. Never use its vocabulary in a message: frontier, decision tree, round, prerequisite, branch, mode, section numbers, "settle/rebuild the tree".
+5. If a `grilling` skill is installed, load it and follow its round format exactly. This skill only decides what to investigate, which decisions to ask, and when to stop.
+
 ## Modes
 
 - `run on-track on <project>` (default): investigate → grill in rounds across turns → route.
 - `quick review`: findings and the recommended next move, no interview.
-- "Give me the plan" (at invocation or any point mid-grill): stop asking, draft the route now (§5), and list every unsettled decision as a labelled assumption with your recommended default.
+- "Give me the plan" (at invocation or any point mid-grill): stop asking, draft the route now (see Land the route), and list every unsettled decision as a labelled assumption with your recommended default.
 
 Read-only by default. Inspecting and drafting are fine. Editing code or project docs, tracker changes, deploys, side-effecting probes, spending, credential changes and dispatching implementation agents need the owner's explicit go-ahead.
 
@@ -46,7 +54,7 @@ Rules:
 - The **frontier** is every open decision whose prerequisites are settled. Ask the whole frontier in one round. A question that depends on another still-open question waits for a later round.
 - Delete any question where every plausible answer leads to the same action; recommend that action instead.
 - Avoid false binaries. If two goals could be sequential (personal use, then wider release), ask about their order and the gate between them.
-- If the frontier is empty after investigation, don't invent questions; go straight to §5.
+- If the frontier is empty after investigation, don't invent questions; go straight to Land the route.
 - If the owner has asked for one question at a time, do that (the grilling method's supported opt-out).
 
 ## 3. Ask a round
@@ -78,8 +86,8 @@ Writing rules:
 - Number questions continuously across the session (round 2 after Q1-Q2 starts at Q3).
 - At most 4 questions per round. If more are ready, ask the 4 most consequential and carry the rest.
 - Before sending, check every ➡️ line: if agreeing with it would mean answering "no" to its question, reword the question.
-- **Then end your turn.** No more tool calls, no status echoes, no "waiting" messages, no next-round questions, no keep/stop/change report, no permission menu, no answers on the owner's behalf. If the host re-prompts you with no new user message, reply with one line: `Waiting on your answers to Q1-Q3.`
-- Ask in plain text. Use a question tool (e.g. `ask_user_question`) only if the user or host requires one: one call, exact schema. If it fails validation, ask once in plain text; no retry variants. A tool title, option list, acknowledgement or empty result is not an answer. Don't re-ask in prose a question a working tool is already showing.
+- A question tool (e.g. `ask_user_question`) is used only if the user or host requires it: one call, exact schema. If it fails validation, ask once in plain text. A tool title, option list, acknowledgement or empty result is not an answer.
+- If the host re-prompts you with no new user message, reply with one line: `Waiting on your answers to Q1-Q3.`
 
 ## 4. Advance on each reply
 
@@ -109,3 +117,4 @@ Then ask once whether this captures what was agreed, before anything is enacted.
 - Does "yes" mean my recommendation for each?
 - Is everything I call the owner's decision something they actually said?
 - Could the owner act on this message without reading anything else, and is it free of skill vocabulary?
+- Is this my chat reply, with no tool call after it?
