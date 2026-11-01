@@ -1,14 +1,13 @@
 ---
 name: on-track
-description: "Check whether a project is still heading toward its owner's real outcome. Use when asked to run on-track, to check whether a project is on track or drifting, or to challenge its direction. Investigates evidence, grills the owner in rounds (Matt Pocock's grilling method) until the owner's decisions are settled, then drafts a 1-3 task recovery route."
-version: 0.7.2
+description: "Check whether a project is still heading toward its owner's real outcome. Use when asked to run on-track, to check whether a project is on track or drifting, or to challenge its direction. Investigates evidence, grills the owner in rounds of numbered questions until the owner's decisions are settled, then drafts a 1-3 task recovery route."
+version: 0.7.5
 author: Juan Mackie
 license: MIT
 tags: [project-alignment, critical-review, grilling, wayfinding, outcome-validation]
 metadata:
   hermes:
     tags: [project-alignment, grilling, decision-tree, outcome-validation]
-    related_skills: [grilling, wayfinder, fable-loop]
 ---
 
 # On Track
@@ -20,8 +19,8 @@ metadata:
 1. **Your questions are your reply.** When the investigation is done, your next output is the questions, written as your normal chat message. Never deliver them through a tool: not bash, echo, cat, a heredoc, a file, or a question widget. Output sent through a tool does not end your turn, so you carry on without the owner and they never get to answer.
 2. **After the questions, stop.** Your reply ends with the reply-hint line. No tool call after it, no thinking out loud, no "Option 1 / Option 2" menu, no "which do you want?", no preview of what you will do after they answer. Never offer to skip to the plan; the owner can ask.
 3. **Never answer for the owner.** A recommendation is a proposal until they accept it.
-4. **Plain words.** The owner has not read this skill. Never use its vocabulary in a message: frontier, decision tree, round, prerequisite, branch, mode, section numbers, "settle/rebuild the tree".
-5. If a `grilling` skill is installed, load it and follow its round format exactly. This skill only decides what to investigate, which decisions to ask, and when to stop.
+4. **Plain words.** The owner has not read this skill. Never use its vocabulary in a message: frontier, decision tree, round, prerequisite, branch, mode, section numbers, "settle/rebuild the tree". Write in ASD-STE100 Simplified Technical English (see Writing style). Give a little context first. Use the terms the owner and the project already use.
+5. Everything needed is in this file. Do not load or depend on any other skill.
 
 ## Modes
 
@@ -55,7 +54,7 @@ Rules:
 - Delete any question where every plausible answer leads to the same action; recommend that action instead.
 - Avoid false binaries. If two goals could be sequential (personal use, then wider release), ask about their order and the gate between them.
 - If the frontier is empty after investigation, don't invent questions; go straight to Land the route.
-- If the owner has asked for one question at a time, do that (the grilling method's supported opt-out).
+- If the owner has asked for one question at a time, do that .
 
 ## 3. Ask a round
 
@@ -63,7 +62,7 @@ Write to the owner like a colleague who hasn't seen your notes. The message must
 
 Order:
 
-1. **Where we are** (1-3 plain sentences): the one thing that matters most, usually the gap between work done and the outcome actually proven, and how you know it. From round 2 on, open with a `Settled:` line (e.g. `Settled: Q1 → personal daily use first (you said).`) plus one sentence on what that changes.
+1. **Where we are** (1-3 plain sentences): the one thing that matters most, usually the gap between work done and the outcome actually proven, and how you know it. From round 2 on, open with a `Settled:` line (e.g. `Settled: first user (Q1) → you, daily use (you said).`) plus one sentence on what that changes. Name each decision by its title, not a bare number.
 2. **The questions**, in this format:
 
 ```text
@@ -76,10 +75,11 @@ Order:
 ❓ **Q2** - ...
 ```
 
-3. **How to reply** (one line): `Reply "yes" to accept all my recommendations, answer by number (e.g. "Q1 yes, Q2 B"), or just tell me in your own words.`
+3. **How to reply** (one line): `Reply "yes" to accept all my recommendations. Or answer by number, for example "Q1 yes, Q2 B". Or tell me in your own words.`
 
 Writing rules:
 
+- Each question is one idea, never two bundled together. Add a one-line "why this matters" only where the question could be misread or get a throwaway answer.
 - Ask the questions; never describe them. "The frontier asks Q1 (milestone split)" is a summary, not a question.
 - Use the owner's and the project's own words. Never use skill vocabulary in the message: frontier, decision tree, round, prerequisite, branch, mode, "§", or strings like "A/A/A".
 - Don't list files read or checks run. Mention a result only if it changes a question (e.g. "tests pass, but none cover the in-car case").
@@ -89,14 +89,39 @@ Writing rules:
 - A question tool (e.g. `ask_user_question`) is used only if the user or host requires it: one call, exact schema. If it fails validation, ask once in plain text. A tool title, option list, acknowledgement or empty result is not an answer.
 - If the host re-prompts you with no new user message, reply with one line: `Waiting on your answers to Q1-Q3.`
 
+### Writing style: ASD-STE100
+
+Write every question, recommendation, "where we are" text, Settled line and reply hint in ASD-STE100 Simplified Technical English.
+
+- One idea in each sentence. Maximum 20 words in a sentence.
+- Use the active voice. Say who does what: "You choose A", not "A is chosen".
+- Use only the simple present, simple past and simple future tenses. No "has been" or "is running".
+- Use short, common words: "use" (not "utilize"), "start" (not "initiate"), "help" (not "facilitate").
+- One word, one meaning. Use the same word for the same thing each time. Do not swap in synonyms.
+- Keep the articles (the, a, an) and the word "that". Do not drop them.
+- No idioms, slang, figures of speech or contractions.
+- Do not put more than 3 nouns in a row.
+- Keep project names (files, products, features) exactly as the project writes them. Explain a new technical term one time, in one short sentence.
+- Use a short list for choices.
+- The full standard has an approved word list. You cannot check against it here. Follow these rules and use the simplest word you know.
+
+Example round:
+
+```text
+❓ **Q1** - **First user**: Who must use the app first? A) You, every day. B) A small group of test users. C) The public. Should you be the first user (A), with the test group after you?
+
+➡️ Yes, choose A. You get fast feedback at low cost. The test group gives more data, but it takes more time.
+```
+
 ## 4. Advance on each reply
 
 1. Map each answer to its Q number or unmistakable content. Settle only what the owner actually chose, keeping their caveats and new constraints. Your recommendation never becomes their decision by default.
-2. A bare "yes" to a multi-question round accepts every recommendation in that round: record it as such in the Settled line (`Q1-Q2 → your recommendations (blanket yes)`) and continue. Ask one narrow check first only for a question where a wrong reading would be costly.
+2. A bare "yes" to a multi-question round accepts every recommendation in that round: record it as such in the Settled line (`first user (Q1), main setting (Q2) → your recommendations (blanket yes)`) and continue. Ask one narrow check first only for a question where a wrong reading would be costly.
 3. Unanswered questions stay open: carry them into the next round under the same number, shortened. Never re-ask a settled question.
 4. Experience the owner reports ("I haven't tried it in the car") is a fact about them: record it as said and adjust the route. If they haven't used it, the first proof is a first real use, not a fix.
-5. If the owner changes the destination, rebuild the tree from that branch and name the questions it drops.
-6. Recompute the frontier and ask the next round. Repeat until the frontier is empty.
+5. If the owner says an earlier answer should change another question, reopen that branch and re-ask it in the next round.
+6. If the owner changes the destination, rebuild the tree from that branch and name the questions it drops.
+7. Recompute the frontier and ask the next round. Repeat until the frontier is empty.
 
 ## 5. Land the route
 
@@ -105,7 +130,7 @@ When the frontier is empty, or the owner asks for the plan:
 - **North Star:** the user-visible outcome and the success conditions the owner actually agreed.
 - **Keep / stop / change:** the fewest corrections. Delete before adding.
 - **First proof:** the cheapest real-world test of the riskiest assumption, with pass / fail / inconclusive. Mark any metric you proposed as proposed.
-- **Next 1-3 tasks:** each with purpose, prerequisite, deliverable and an observable acceptance check. Separate research from agent-ready build work.
+- **Next 1-3 tasks:** each with purpose, prerequisite, deliverable and an observable acceptance check. Separate research from agent-ready build work. A task is specified well enough when an agent could do it without asking the owner anything.
 - **Assumptions:** every decision the owner did not settle, labelled.
 
 Then ask once whether this captures what was agreed, before anything is enacted. Drafting needs no approval; acting does.
