@@ -1,7 +1,7 @@
 ---
 name: on-track
 description: "Check whether a project is still heading toward its owner's real outcome. Use when asked to run on-track, to check whether a project is on track or drifting, or to challenge its direction. Investigates evidence, grills the owner in rounds of numbered questions until the owner's decisions are settled, then drafts a 1-3 task recovery route."
-version: 0.8.0
+version: 0.8.1
 author: Juan Mackie
 license: MIT
 tags: [project-alignment, critical-review, grilling, wayfinding, outcome-validation]
@@ -180,6 +180,8 @@ Assumptions: every decision the owner did not settle, labelled.
 
 Then ask once whether this captures what was agreed, before anything is enacted. Drafting needs no approval; acting does.
 
+Update docs: Once the owner accepts the route, ask once: "Should I update the relevant project docs to reflect these decisions?" Do not update any files or dispatch agents to do so until they give a clear yes.
+
 Before sending any message
 
 Did I look up every fact I could, instead of asking?
@@ -197,3 +199,5 @@ Is this my chat reply, with no tool call after it?
 If this turn started with no new owner message: is my whole reply the one waiting line, with zero tool calls?
 
 Am I describing my own behavior instead of asking or waiting?
+
+If the route was just accepted: did I ask whether to update the project docs?
