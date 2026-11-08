@@ -1,0 +1,15 @@
+how do we rewrite this to better leverage data-oriented design principles,caching is cope for a slow design. do not add caches and delete all existing caches. instead, redesign it to be faster
+
+Be thorough in your analysis and bold in your recommendations
+
+Exercise abstract thinking when considering this task
+
+Reduce this problem to its irreducible constraints and rebuild it from zero.
+
+What would a principal architect immediately rewrite before even starting this?
+
+Design the single test that breaks this design on day one.
+
+What higher-level abstraction would make this entire problem disappear?
+
+Do a sweep for tests that do nothing than re-assert the source, are low value, duplicative, etc. remove them and then see whether the code can be simplified now that the tests no longer demand seams to exist
