@@ -13,3 +13,5 @@ Design the single test that breaks this design on day one.
 What higher-level abstraction would make this entire problem disappear?
 
 Do a sweep for tests that do nothing than re-assert the source, are low value, duplicative, etc. remove them and then see whether the code can be simplified now that the tests no longer demand seams to exist
+
+Take as tittle human attention as possible, and give as much value as possible.
