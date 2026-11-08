@@ -15,3 +15,21 @@ What higher-level abstraction would make this entire problem disappear?
 Do a sweep for tests that do nothing than re-assert the source, are low value, duplicative, etc. remove them and then see whether the code can be simplified now that the tests no longer demand seams to exist
 
 Take as tittle human attention as possible, and give as much value as possible.
+
+## Design the codebase for agent locality and small blast radius
+Organize by domain/business capability first (e.g., billing/, identity/), then vertical slices for individual use cases (changePassword/, refundPayment/) rather than pure technical layers (controllers/, services/, utils/).
+Prefer cohesive, self-contained modules with strict boundaries so an agent can load a narrow working set, make a change, and verify it without exploring the whole system.
+Enforce low coupling and high coherence (Dependency Inversion with consumer-defined interfaces). Treat modules as potentially disposable/regenerable when boundaries are clear.
+Use bounded contexts (DDD-style) as containment strategy. Keep shared technical concerns inside domain boundaries where possible.
+Goal: an unfamiliar agent should find the right context, change one bounded area, and run a narrow verification loop without guessing or broad side effects.
+
+## Prefer small, reviewable, reversible changes and isolation
+Default to minimum-diff, high-locality edits. Avoid premature abstractions (e.g., “three-callers rule” before extracting helpers).
+
+## Continuous maintenance and cleanup loops
+Address dead/unused code with removal, stale feature flags/experiments, flaky tests, CI cost reduction, documentation drift as it occurs or is create due to works.
+
+## Make architecture and standards executable and discoverable
+Make architecture and standards executable and discoverable
+Enforce modularity, dependency direction, complexity budgets, and standards via CI (structural rules, smell detection, test-impact analysis).
+Keep navigability high: clear entry points, consistent naming, searchable structure so agents (and humans) orient quickly.
