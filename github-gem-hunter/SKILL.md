@@ -9,7 +9,7 @@ description: >
   Not for finding the most popular repo in a category, and not for code search.
 license: MIT
 metadata:
-  author: your-name
+  author: Juan Mackie
   version: 0.1.0
   domain: developer-tools
   tags: [github, discovery, research, open-source]
