@@ -33,3 +33,5 @@ Address dead/unused code with removal, stale feature flags/experiments, flaky te
 Make architecture and standards executable and discoverable
 Enforce modularity, dependency direction, complexity budgets, and standards via CI (structural rules, smell detection, test-impact analysis).
 Keep navigability high: clear entry points, consistent naming, searchable structure so agents (and humans) orient quickly.
+
+Read this entire project and find everything that's broken, inconsistent, inefficient, or no longer needed. Fix what you're sure about and list the rest for me to review
