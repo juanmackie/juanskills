@@ -1,6 +1,6 @@
 ---
 name: vibe
-description: Sourced improvement experiments — research candidate ideas, benchmark each in an isolated Git clone against a fresh baseline, keep only measured wins, apply at finish. Use when asked to improve a project with evidence, test a performance or quality hypothesis, harvest ideas from GitHub and Hacker News, or when the vibe_full / vibe_discover tools are registered.
+description: Sourced improvement experiments — research candidate ideas, benchmark each in an isolated Git clone against a fresh baseline, keep only measured wins, apply at finish. Use when asked to improve a project with evidence, test a performance or quality hypothesis, harvest ideas from GitHub, Hacker News, and arXiv papers, or when the vibe_full / vibe_discover tools are registered.
 ---
 
 # Vibe
@@ -24,7 +24,9 @@ Read the project: instructions, code, tests, runnable workflows. Derive at least
 
 Call `vibe_discover` per topic. When results describe broad products only, inspect their implementations and run up to three further targeted searches for the mechanism that matters.
 
-Turn the results into a backlog of 1–20 candidates: title, full source URL, testable hypothesis. Copy the URL from a real result (`github.repositories[].url`) or from a source you inspected.
+For mechanisms with research literature (algorithms, data structures, scheduling, compression, caching, model inference), also search arXiv directly — `vibe_discover` does not cover it. See [Searching arXiv](#searching-arxiv).
+
+Turn the results into a backlog of 1–20 candidates: title, full source URL, testable hypothesis. Copy the URL from a real result (`github.repositories[].url`) or from a source you inspected, such as an arXiv abstract page.
 
 **Done when** every candidate carries an inspected source URL and a falsifiable hypothesis — or you report honestly that fewer are supported, naming the gap.
 
@@ -45,7 +47,9 @@ Choose two commands inside the trial:
 
 Call `start` with `index`, `measure`, `checks`, `metricName`, `direction` (`lower` or `higher`), and `protectedPaths`: every benchmark and check script, fixture, and config the commands read, as relative paths — `[]` only when they read no files. A missing entry is the commonest false win, since the trial then "improves" by editing its own ruler.
 
-**Done when** start returns a baseline median with baseline checks passing.
+Read the baseline runs. When their spread is wider than the 1% keep bar, a keep or discard cannot be told from noise: raise `runs` (up to 9), make the benchmark more stable, or `skip` with that reason.
+
+**Done when** start returns a baseline median with baseline checks passing and a baseline spread narrower than the keep bar — or the candidate is skipped.
 
 ### 4. Edit the trial
 
@@ -91,7 +95,22 @@ Field errors are precise: read the message, correct that field, and move on rath
 
 - GitHub search samples the first page across topic and star bands. Anonymous access is capped near ten requests a minute, so `coverage.limited` and `complete: false` are normal outcomes — report the gap instead of treating the sample as exhaustive.
 - last30days covers keyless web and Hacker News in an isolated temporary home, without browser cookies. `source_status` and each result URL travel with the data.
-- Both services receive the topic, so keep credentials, private project details, and personal data out of it.
+- Services receive the topic, so keep credentials, private project details, and personal data out of it. This applies to arXiv searches too.
+
+## Searching arXiv
+
+arXiv is a source of mechanisms with published evidence, not of proof. Query its public API (Atom XML, no key). Let `curl` encode the query; a raw space or quote in the URL is rejected:
+
+`curl -sS -G https://export.arxiv.org/api/query --data-urlencode 'search_query=abs:"<mechanism phrase>" AND cat:<category>' -d sortBy=submittedDate -d sortOrder=descending -d max_results=20`
+
+A fetch tool needs the same value percent-encoded (`%22` for quotes, `+` for spaces).
+
+- Fields: `ti:`, `abs:`, `au:`, `cat:` (for example `cs.LG`, `cs.DS`), `all:`. Combine with `AND`, `OR`, `ANDNOT`. Limit by date with `submittedDate:[YYYYMMDD0000 TO YYYYMMDD2359]`.
+- Send at most one request every 3 seconds on one connection. On HTTP 429/503, wait and retry once, then report the gap.
+- The source URL is the abstract page `https://arxiv.org/abs/<id>`. Inspect it before listing the candidate: read the abstract, and open `https://arxiv.org/pdf/<id>` when the abstract does not state the mechanism clearly enough to write a hypothesis.
+- Prefer papers with public code. Look for `https://github.com/<owner>/<repo>` in `<summary>` and `<arxiv:comment>`, and strip trailing punctuation. Read that implementation before you write the trial change.
+- Write the hypothesis against this project's own benchmark. A paper's reported gain was measured on other workloads, so it is a lead, not evidence, and the preprint may not be peer reviewed. Never use the paper's numbers as the expected result or the baseline.
+- Implement the idea in the trial. Do not paste code from a paper's repository without checking its license.
 
 ## Integrity
 
